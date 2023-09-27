@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
   },
   goToRegistrationContainer: {
-    marginTop: 50, // Add 50 units of space between the "Sign In" button and "Go to Registration" button
+    marginTop: 50,
   },
 });
 
