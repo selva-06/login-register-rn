@@ -7,8 +7,9 @@ import {
   StyleSheet,
   ImageBackground,
 } from 'react-native';
-import {RadioButton, Checkbox} from 'react-native-paper';
+import {RadioButton} from 'react-native-paper';
 import {Calendar} from 'react-native-calendars';
+import CustomCheckbox from './CustomCheckbox';
 
 const RegistrationScreen = () => {
   const [firstName, setFirstName] = useState('');
@@ -34,6 +35,9 @@ const RegistrationScreen = () => {
 
   const handleOkPress = () => {
     setShowCalendar(false);
+  };
+  const handleCheckboxToggle = () => {
+    setChecked(!checked);
   };
 
   return (
@@ -95,16 +99,9 @@ const RegistrationScreen = () => {
         )}
 
         <View style={styles.checkboxContainer}>
-          <Checkbox
-            status={checked ? 'checked' : 'unchecked'}
-            onPress={() => setChecked(!checked)}
-            color="red"
-            uncheckColor="black"
-          />
-          <Text style={styles.checkboxLabel}>
-            I accept the terms and conditions
-          </Text>
+          <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
         </View>
+
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
@@ -150,12 +147,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
-    borderColor: 'black',
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 4,
+    padding: 2,
+    marginTop: 10,
   },
   checkboxLabel: {
-    fontSize: 16,
-    color: '#000',
     marginLeft: 8,
+    fontSize: 16,
+    color: 'black',
   },
   button: {
     backgroundColor: '#007BFF',
