@@ -3,9 +3,9 @@ import {
   View,
   TextInput,
   Text,
-  TouchableOpacity,
   StyleSheet,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
@@ -16,7 +16,7 @@ const RegistrationScreen = () => {
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('male');
   const [dateOfBirth, setDateOfBirth] = useState(null); // Added dateOfBirth state
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,10 +26,11 @@ const RegistrationScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [dateOfBirthError, setDateOfBirthError] = useState('');
+  const [checkedError, setCheckedError] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false); // Updated state name
 
   const validateFirstName = () => {
-    if (!firstName) {
+    if (!firstName.trim()) {
       setFirstNameError('First Name is required');
     } else {
       setFirstNameError('');
@@ -87,6 +88,14 @@ const RegistrationScreen = () => {
     }
   };
 
+  const validateChecked = () => {
+    if (!checked) {
+      setCheckedError('*');
+    } else {
+      setCheckedError('');
+    }
+  };
+
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateOfBirth;
 
@@ -100,12 +109,31 @@ const RegistrationScreen = () => {
   };
 
   const handleRegister = () => {
+    if (
+      !firstName &&
+      !lastName &&
+      !email &&
+      !password &&
+      !confirmPassword &&
+      !dateOfBirth &&
+      !checked
+    ) {
+      setFirstNameError('First Name is required');
+      setLastNameError('Last Name is required');
+      setEmailError('Email is required');
+      setPasswordError('Password is required');
+      setConfirmPasswordError('Confirm Password is required');
+      setDateOfBirthError('Date of Birth is required');
+      setCheckedError('*');
+      return; // Exit the function early if there are empty fields
+    }
     validateFirstName();
     validateLastName();
     validateEmail();
     validatePassword();
     validateConfirmPassword();
     validateDateOfBirth();
+    validateChecked();
 
     if (
       !firstNameError &&
@@ -113,7 +141,8 @@ const RegistrationScreen = () => {
       !emailError &&
       !passwordError &&
       !confirmPasswordError &&
-      !dateOfBirthError
+      !dateOfBirthError &&
+      !checkedError
     ) {
       console.log('Registration details:', {
         firstName,
@@ -137,6 +166,7 @@ const RegistrationScreen = () => {
       setPasswordError('');
       setConfirmPasswordError('');
       setDateOfBirthError('');
+      setCheckedError('');
     }
   };
 
@@ -164,7 +194,6 @@ const RegistrationScreen = () => {
           onBlur={validateLastName}
         />
         <Text style={styles.error}>{lastNameError}</Text>
-
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -178,6 +207,7 @@ const RegistrationScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Password"
+          placeholderTextColor="black"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
@@ -188,6 +218,7 @@ const RegistrationScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
+          placeholderTextColor="black"
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -231,6 +262,7 @@ const RegistrationScreen = () => {
         )}
         <View style={styles.checkboxContainer}>
           <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
+          <Text style={styles.error}>{checkedError}</Text>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
