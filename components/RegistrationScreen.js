@@ -8,41 +8,141 @@ import {
   ImageBackground,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
-import {Calendar} from 'react-native-calendars';
 import CustomCheckbox from './CustomCheckbox';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const RegistrationScreen = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('male');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState(null); // Added dateOfBirth state
   const [checked, setChecked] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [dateOfBirthError, setDateOfBirthError] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false); // Updated state name
 
-  const handleDateSelect = day => {
-    setSelectedDate(day.dateString);
+  const validateFirstName = () => {
+    if (!firstName) {
+      setFirstNameError('First Name is required');
+    } else {
+      setFirstNameError('');
+    }
   };
 
-  const handleRegister = () => {
-    console.log('Registration details:', {
-      firstName,
-      lastName,
-      gender,
-      selectedDate,
-      checked,
-    });
+  const validateLastName = () => {
+    if (!lastName) {
+      setLastNameError('Last Name is required');
+    } else {
+      setLastNameError('');
+    }
   };
 
-  const handleOkPress = () => {
-    setShowCalendar(false);
+  const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
   };
+
+  const validatePassword = () => {
+    const minLength = 8;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (password.length < minLength) {
+      setPasswordError(
+        `Password must be at least ${minLength} characters long`,
+      );
+    } else if (!passwordRegex.test(password)) {
+      setPasswordError(
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+      );
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  const validateConfirmPassword = () => {
+    if (password !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match');
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
+
+  const validateDateOfBirth = () => {
+    if (!dateOfBirth) {
+      setDateOfBirthError('Date of Birth is required');
+    } else {
+      setDateOfBirthError('');
+    }
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dateOfBirth;
+
+    setShowDatePicker(false);
+
+    setDateOfBirth(currentDate);
+  };
+
   const handleCheckboxToggle = () => {
     setChecked(!checked);
   };
 
+  const handleRegister = () => {
+    validateFirstName();
+    validateLastName();
+    validateEmail();
+    validatePassword();
+    validateConfirmPassword();
+    validateDateOfBirth();
+
+    if (
+      !firstNameError &&
+      !lastNameError &&
+      !emailError &&
+      !passwordError &&
+      !confirmPasswordError &&
+      !dateOfBirthError
+    ) {
+      console.log('Registration details:', {
+        firstName,
+        lastName,
+        gender,
+        dateOfBirth,
+        checked,
+        email,
+      });
+      setFirstName('');
+      setLastName('');
+      setGender('male');
+      setDateOfBirth('');
+      setChecked(false);
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setFirstNameError('');
+      setLastNameError('');
+      setEmailError('');
+      setPasswordError('');
+      setConfirmPasswordError('');
+      setDateOfBirthError('');
+    }
+  };
+
   return (
     <ImageBackground
-      source={require('C:/Users/018031/Model/assets/img.png')}
+      source={require('../assets/img.png')}
       style={styles.backgroundImage}>
       <View style={styles.container}>
         <TextInput
@@ -51,16 +151,52 @@ const RegistrationScreen = () => {
           placeholderTextColor="black"
           value={firstName}
           onChangeText={text => setFirstName(text)}
+          onBlur={validateFirstName}
         />
+        <Text style={styles.error}>{firstNameError}</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Last Name"
           placeholderTextColor="black"
           value={lastName}
           onChangeText={text => setLastName(text)}
+          onBlur={validateLastName}
         />
+        <Text style={styles.error}>{lastNameError}</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="black"
+          value={email}
+          onChangeText={text => setEmail(text)}
+          onBlur={validateEmail}
+        />
+        <Text style={styles.error}>{emailError}</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          onBlur={validatePassword}
+        />
+        <Text style={styles.error}>{passwordError}</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          onBlur={validateConfirmPassword}
+        />
+        <Text style={styles.error}>{confirmPasswordError}</Text>
+
         <Text style={styles.label}>Gender:</Text>
-        <View style={styles.radioGroup}>
+        <View>
           <RadioButton.Group
             onValueChange={value => setGender(value)}
             value={gender}>
@@ -74,34 +210,28 @@ const RegistrationScreen = () => {
             </View>
           </RadioButton.Group>
         </View>
-        <Text style={styles.label}>Date of Birth:</Text>
-        <TouchableOpacity
-          style={styles.datePickerButton}
-          onPress={() => setShowCalendar(true)}>
-          <Text style={styles.datePickerText}>
-            {selectedDate ? selectedDate : 'Select Date of Birth'}
-          </Text>
-        </TouchableOpacity>
-        {showCalendar && (
-          <View style={styles.calendarContainer}>
-            <Calendar
-              onDayPress={handleDateSelect}
-              markedDates={{[selectedDate]: {selected: true}}}
-              style={styles.calendar}
-              theme={{
-                backgroundColor: '#ffffff', // Set calendar background color
-              }}
-            />
-            <TouchableOpacity style={styles.okButton} onPress={handleOkPress}>
-              <Text style={styles.okButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        <TextInput
+          style={styles.input}
+          placeholder="Date of Birth"
+          placeholderTextColor="black"
+          value={dateOfBirth ? dateOfBirth.toDateString() : ''}
+          onTouchStart={() => setShowDatePicker(true)}
+        />
+        <Text style={styles.error}>{dateOfBirthError}</Text>
 
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={dateOfBirth ? dateOfBirth : new Date()} // Updated value prop
+            mode="date"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
         <View style={styles.checkboxContainer}>
           <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
         </View>
-
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
@@ -109,10 +239,11 @@ const RegistrationScreen = () => {
     </ImageBackground>
   );
 };
+
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // or 'stretch', 'contain', etc.
+    resizeMode: 'cover',
   },
   container: {
     padding: 16,
@@ -121,22 +252,16 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 12,
     paddingLeft: 8,
     color: 'black',
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
     color: '#000',
-  },
-  radioGroup: {
-    marginBottom: 12,
   },
   radioButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
   },
   radioLabel: {
     marginLeft: 8,
@@ -146,24 +271,15 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: '#000',
-    borderRadius: 4,
     padding: 2,
-    marginTop: 10,
-  },
-  checkboxLabel: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: 'black',
+    paddingTop: 10,
   },
   button: {
     backgroundColor: '#007BFF',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
-    marginTop: 16,
+    paddingTop: 10,
   },
   buttonText: {
     fontSize: 16,
@@ -175,7 +291,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 40,
     justifyContent: 'center',
-    marginTop: 12,
     paddingLeft: 8,
   },
   datePickerText: {
@@ -186,7 +301,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,
-    marginBottom: 20,
   },
   calendar: {
     borderWidth: 1,
@@ -197,11 +311,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     alignItems: 'center',
     borderRadius: 5,
-    marginTop: 1, // Adjust the position of the "OK" button
   },
   okButtonText: {
     fontSize: 14,
     color: '#fff',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  error: {
+    color: 'red',
   },
 });
 
