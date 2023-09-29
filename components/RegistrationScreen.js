@@ -11,7 +11,7 @@ import {
 import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {createTable, insertUser} from '../DatabaseHelper';
+import {insertUser} from '../DatabaseHelper';
 
 const RegistrationScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -40,7 +40,7 @@ const RegistrationScreen = ({navigation}) => {
   };
 
   const validateLastName = () => {
-    if (!lastName) {
+    if (!lastName.trim()) {
       setLastNameError('Last Name is required');
     } else {
       setLastNameError('');
@@ -49,7 +49,7 @@ const RegistrationScreen = ({navigation}) => {
 
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email.trim())) {
       setEmailError('Please enter a valid email address');
     } else {
       setEmailError('');
@@ -170,11 +170,13 @@ const RegistrationScreen = ({navigation}) => {
       setDateOfBirthError('');
       setCheckedError('');
     }
-    createTable();
     insertUser(
       firstName,
       email,
       password,
+      lastName,
+      gender,
+      dateOfBirth,
       results => {
         console.log('User inserted successfully:', results);
       },
@@ -243,7 +245,7 @@ const RegistrationScreen = ({navigation}) => {
         <Text style={styles.label}>Gender:</Text>
         <View>
           <RadioButton.Group
-            onValueChange={value => setGender(value)}
+            onValueChange={newValue => setGender(newValue)}
             value={gender}>
             <View style={styles.radioButton}>
               <Text style={styles.radioLabel}>Male</Text>
@@ -267,6 +269,7 @@ const RegistrationScreen = ({navigation}) => {
         {showDatePicker && (
           <DateTimePicker
             testID="dateTimePicker"
+            onValueChange={newValue => setDateOfBirth(newValue)}
             value={dateOfBirth ? dateOfBirth : new Date()} // Updated value prop
             mode="date"
             is24Hour={true}
@@ -282,8 +285,8 @@ const RegistrationScreen = ({navigation}) => {
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
         <Button
-          title="Go to Home"
-          onPress={() => navigation.navigate('Home')}
+          title="Go to Login"
+          onPress={() => navigation.navigate('Login')}
         />
       </View>
     </ImageBackground>

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
+import db from '../DatabaseHelper.js';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -16,10 +17,25 @@ const LoginScreen = ({navigation}) => {
     validateEmail();
     validatePassword();
     if (!emailError && !passwordError) {
-      console.log('Email:', email);
-      console.log('Password:', password);
-      // Implement your sign in logic here
-      navigation.navigate('Home'); // Navigate to the Home screen after registering
+      db.transaction(tx => {
+        tx.executeSql(
+          'SELECT * FROM users WHERE email = ? AND password = ?',
+          [email, password],
+          (_, {rows}) => {
+            if (rows.length > 0) {
+              const user = rows.item(0);
+              console.log('User authenticated');
+              navigation.navigate('Home', {user});
+            } else {
+              setEmailError('Invalid email or password');
+              setPasswordError('Invalid email or password');
+            }
+          },
+          (_, error) => {
+            console.log('Error querying database: ', error);
+          },
+        );
+      });
     }
   };
   const validateEmail = () => {
