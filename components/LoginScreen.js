@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, TextInput, Button, StyleSheet} from 'react-native';
+import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -8,9 +8,19 @@ const LoginScreen = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
 
   const handleSignIn = () => {
-    console.log('Email:', email);
-    console.log('Password:', password);
-    // Implement your sign in logic here
+    if (!email && !password) {
+      setEmailError('invalid email');
+      setPasswordError('invlalid password');
+      return;
+    }
+    validateEmail();
+    validatePassword();
+    if (!emailError && !passwordError) {
+      console.log('Email:', email);
+      console.log('Password:', password);
+      // Implement your sign in logic here
+      navigation.navigate('Home'); // Navigate to the Home screen after registering
+    }
   };
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,7 +60,9 @@ const LoginScreen = ({navigation}) => {
         autoCapitalize="none"
         color="black"
         placeholderTextColor="black" // Set text color to black
+        onBlur={validateEmail}
       />
+      <Text style={styles.error}>{emailError}</Text>
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -59,7 +71,9 @@ const LoginScreen = ({navigation}) => {
         secureTextEntry
         placeholderTextColor="black"
         color="black" // Set text color to black
+        onBlur={validatePassword}
       />
+      <Text style={styles.error}>{passwordError}</Text>
       <View style={styles.goToRegistrationContainer}>
         <Button title="Sign In" onPress={handleSignIn} />
         <View style={styles.goToRegistrationContainer}>
@@ -94,6 +108,9 @@ const styles = StyleSheet.create({
   },
   goToRegistrationContainer: {
     marginTop: 50,
+  },
+  error: {
+    color: 'red',
   },
 });
 

@@ -6,12 +6,14 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {createTable, insertUser} from '../DatabaseHelper';
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('male');
@@ -168,6 +170,18 @@ const RegistrationScreen = () => {
       setDateOfBirthError('');
       setCheckedError('');
     }
+    createTable();
+    insertUser(
+      firstName,
+      email,
+      password,
+      results => {
+        console.log('User inserted successfully:', results);
+      },
+      error => {
+        console.error('Error inserting user:', error);
+      },
+    );
   };
 
   return (
@@ -267,6 +281,10 @@ const RegistrationScreen = () => {
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
+        <Button
+          title="Go to Home"
+          onPress={() => navigation.navigate('Home')}
+        />
       </View>
     </ImageBackground>
   );
