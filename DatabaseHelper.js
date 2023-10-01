@@ -66,7 +66,9 @@ const addColumnIfNotExists = (columnName, columnType) => {
 // Add lastname, gender, and dob columns
 addColumnIfNotExists('lastname', 'TEXT');
 addColumnIfNotExists('gender', 'TEXT');
-addColumnIfNotExists('dob', 'DATE');
+addColumnIfNotExists('dob', 'TEXT');
+// Add checkbox column
+addColumnIfNotExists('checkbox_checked', 'INTEGER DEFAULT 0'); // Assuming 0 means not checked and 1 means checked
 
 const insertUser = (
   name,
@@ -75,13 +77,14 @@ const insertUser = (
   lastname,
   gender,
   dob,
+  checkboxChecked, // Add checkboxChecked parameter
   onSuccess,
   onError,
 ) => {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO users (name, email, password, lastname, gender, dob) VALUES (?, ?, ?, ?, ?, ?)',
-      [name, email, password, lastname, gender, dob],
+      'INSERT INTO users (name, email, password, lastname, gender, dob, checkbox_checked) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, email, password, lastname, gender, dob, checkboxChecked],
       (_, results) => {
         onSuccess(results);
       },

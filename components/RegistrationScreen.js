@@ -177,6 +177,7 @@ const RegistrationScreen = ({navigation}) => {
       lastName,
       gender,
       dateOfBirth,
+      checked, // Pass the checkbox value
       results => {
         console.log('User inserted successfully:', results);
       },
@@ -261,7 +262,7 @@ const RegistrationScreen = ({navigation}) => {
           style={styles.input}
           placeholder="Date of Birth"
           placeholderTextColor="black"
-          value={dateOfBirth ? dateOfBirth.toDateString() : ''}
+          value={dateOfBirth ? dateOfBirth.toString() : ''}
           onTouchStart={() => setShowDatePicker(true)}
         />
         <Text style={styles.error}>{dateOfBirthError}</Text>
