@@ -154,6 +154,21 @@ const RegistrationScreen = ({navigation}) => {
         checked,
         email,
       });
+      insertUser(
+        firstName,
+        email,
+        password,
+        lastName,
+        gender,
+        dateOfBirth,
+        checked, // Pass the checkbox value
+        results => {
+          console.log('User inserted successfully:', results);
+        },
+        error => {
+          console.error('Error inserting user:', error);
+        },
+      );
       setFirstName('');
       setLastName('');
       setGender('male');
@@ -170,21 +185,6 @@ const RegistrationScreen = ({navigation}) => {
       setDateOfBirthError('');
       setCheckedError('');
     }
-    insertUser(
-      firstName,
-      email,
-      password,
-      lastName,
-      gender,
-      dateOfBirth,
-      checked, // Pass the checkbox value
-      results => {
-        console.log('User inserted successfully:', results);
-      },
-      error => {
-        console.error('Error inserting user:', error);
-      },
-    );
   };
 
   return (

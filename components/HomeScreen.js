@@ -1,16 +1,31 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRoute} from '@react-navigation/native';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const route = useRoute();
   const {user} = route.params;
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('userData');
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Email: {user.email}</Text>
       <Text style={styles.text}>Name: {user.name}</Text>
+      <Text style={styles.text}>Gender: {user.gender}</Text>
+
       {/* Add more user details as needed */}
+      <TouchableOpacity onPress={handleLogout}>
+        <Text style={{color: 'blue'}}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 };

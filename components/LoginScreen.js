@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import db from '../DatabaseHelper.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -8,7 +9,7 @@ const LoginScreen = ({navigation}) => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!email && !password) {
       setEmailError('invalid email');
       setPasswordError('invlalid password');
@@ -25,6 +26,8 @@ const LoginScreen = ({navigation}) => {
             if (rows.length > 0) {
               const user = rows.item(0);
               console.log('User authenticated');
+              AsyncStorage.setItem('userData', JSON.stringify(user));
+              console.log('User data stored in AsyncStorage:', user);
               navigation.navigate('Home', {user});
             } else {
               setEmailError('Invalid email or password');
