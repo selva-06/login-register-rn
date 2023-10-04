@@ -110,4 +110,63 @@ const getAllUsers = (onSuccess, onError) => {
   });
 };
 
-export {insertUser, getAllUsers};
+// ... (previous code remains the same)
+
+const updateUser = (
+  id,
+  name,
+  email,
+  password,
+  lastname,
+  gender,
+  dob,
+  checkboxChecked,
+  onSuccess,
+  onError,
+) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'UPDATE users SET name=?, email=?, password=?, lastname=?, gender=?, dob=?, checkbox_checked=? WHERE id=?',
+      [name, email, password, lastname, gender, dob, checkboxChecked, id],
+      (_, results) => {
+        onSuccess(results);
+        console.log('ON DSDF');
+      },
+      error => {
+        onError(error);
+      },
+    );
+  });
+};
+
+const deleteUser = (id, onSuccess, onError) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'DELETE FROM users WHERE id=?',
+      [id],
+      (_, results) => {
+        onSuccess(results);
+      },
+      error => {
+        onError(error);
+      },
+    );
+  });
+};
+
+const getUserById = (id, onSuccess, onError) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM users WHERE id=?',
+      [id],
+      (_, results) => {
+        onSuccess(results);
+      },
+      error => {
+        onError(error);
+      },
+    );
+  });
+};
+
+export {insertUser, getAllUsers, updateUser, deleteUser, getUserById};
