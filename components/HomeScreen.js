@@ -267,6 +267,9 @@ const HomeScreen = ({navigation}) => {
   const toggleModal = () => {
     setmenuModalVisible(!menumodalVisible);
   };
+  const handleCrypto = () => {
+    navigation.navigate('Crypto');
+  };
 
   return (
     <>
@@ -310,6 +313,10 @@ const HomeScreen = ({navigation}) => {
 
         <TouchableOpacity style={styles.buttontouch} onPress={handleDeleteUser}>
           <Text style={styles.buttonText}>Delete User</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.buttontouch} onPress={handleCrypto}>
+          <Text style={styles.buttonText}> CryptoRates</Text>
         </TouchableOpacity>
 
         <Modal
