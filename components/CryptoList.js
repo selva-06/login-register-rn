@@ -1,21 +1,23 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
 import axios from 'axios';
 
 const CryptoList = () => {
-  const [cryptoData, setCryptoData] = useState({
-    baseCurrency: 'BTC',
-    rates: {},
-  });
+  const [cryptoData, setCryptoData] = useState([]);
 
   useEffect(() => {
     axios
-      .get('https://api.coinbase.com/v2/exchange-rates?currency=BTC')
+      .get('https://api.coingecko.com/api/v3/coins/markets', {
+        params: {
+          vs_currency: 'inr',
+          order: 'name',
+          per_page: 100,
+          page: 1,
+          sparkline: false,
+        },
+      })
       .then(response => {
-        setCryptoData({
-          baseCurrency: response.data.data.currency,
-          rates: response.data.data.rates,
-        });
+        setCryptoData(response.data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -24,17 +26,24 @@ const CryptoList = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Cryptocurrency Rates</Text>
-      <Text style={styles.baseCurrency}>
-        Base Currency: {cryptoData.baseCurrency}
-      </Text>
+      <Text style={styles.title}>Top 100 Cryptocurrencies by Market Cap</Text>
       <FlatList
-        data={Object.entries(cryptoData.rates)}
-        keyExtractor={item => item[0]}
+        data={cryptoData}
+        keyExtractor={item => item.id}
         renderItem={({item}) => (
           <View style={styles.itemContainer}>
-            <Text style={styles.currency}>Title:{item[0]}</Text>
-            <Text style={styles.rate}>Rate:{item[1]}</Text>
+            <View style={styles.infoContainer}>
+              <Text style={styles.currency}>Symbol: {item.symbol}</Text>
+              <Text style={styles.currency}>Name: {item.name}</Text>
+              <Text style={styles.rate}>
+                Price in INR: {item.current_price}
+              </Text>
+
+              <Text style={styles.rate}>
+                Price Change (24h): {item.price_change_24h}
+              </Text>
+            </View>
+            <Image source={{uri: item.image}} style={styles.image} />
           </View>
         )}
       />
@@ -51,12 +60,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: 'white',
-  },
-  baseCurrency: {
-    fontSize: 18,
-    color: 'white',
-    marginBottom: 8,
   },
   itemContainer: {
     marginBottom: 16,
@@ -64,15 +67,22 @@ const styles = StyleSheet.create({
     padding: 8,
     borderColor: '#ccc',
     borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  infoContainer: {
+    flex: 1,
   },
   currency: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
   },
   rate: {
     fontSize: 16,
-    color: 'white',
+  },
+  image: {
+    width: 100,
+    height: 100,
   },
 });
 
