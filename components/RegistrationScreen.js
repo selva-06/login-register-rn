@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   Text,
-  StyleSheet,
   ImageBackground,
   TouchableOpacity,
   Button,
@@ -12,6 +11,7 @@ import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {insertUser} from '../DatabaseHelper';
+import {registerStyles} from '../styles/ScreenStyles';
 
 const RegistrationScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -294,91 +294,6 @@ const RegistrationScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-  },
-  container: {
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    color: 'black',
-  },
-  label: {
-    fontSize: 16,
-    color: '#000',
-  },
-  radioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  radioLabel: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#000',
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 2,
-    paddingTop: 10,
-  },
-  button: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    alignItems: 'center',
-    borderRadius: 5,
-    paddingTop: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  datePickerButton: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    height: 40,
-    justifyContent: 'center',
-    paddingLeft: 8,
-  },
-  datePickerText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  calendarContainer: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-  },
-  calendar: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-  },
-  okButton: {
-    backgroundColor: '#007BFF',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  okButtonText: {
-    fontSize: 14,
-    color: '#fff',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  error: {
-    color: 'red',
-  },
-});
+const styles = registerStyles;
 
 export default RegistrationScreen;

@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   TextInput,
   Button,
@@ -20,6 +19,7 @@ import {
 import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {homeStyles} from '../styles/ScreenStyles';
 
 const HomeScreen = ({navigation}) => {
   const route = useRoute();
@@ -517,101 +517,6 @@ const HomeScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: 'top',
-    // alignItems: 'center',
-    // padding: 20,
-    flexDirection: 'column',
-  },
-  text: {
-    fontSize: 20,
-    marginBottom: 10,
-    color: 'black',
-    marginLeft: 30,
-  },
-  linkText: {
-    color: 'blue',
-    fontSize: 16,
-    marginBottom: 10,
-    marginLeft: 30,
-  },
-  error: {
-    color: 'red',
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    color: 'black',
-  },
-  radioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  radioLabel: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#000',
-  },
-  label: {
-    fontSize: 16,
-    color: '#000',
-  },
-  button: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-    width: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttontouch: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-    marginLeft: 100,
-    width: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalView: {
-    position: 'absolute',
-    backgroundColor: 'grey',
-    top: 0,
-    left: 0,
-    height: '100%',
-    width: 200, // Adjust the width as needed
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  menuItem: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-});
+const styles = homeStyles;
 
 export default HomeScreen;

@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
+import {View, Text, TextInput, Button} from 'react-native';
 import db from '../DatabaseHelper.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {loginStyles} from '../styles/ScreenStyles.js';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -67,6 +68,7 @@ const LoginScreen = ({navigation}) => {
       setPasswordError('');
     }
   };
+  const styles = loginStyles;
 
   return (
     <View style={styles.container}>
@@ -105,32 +107,5 @@ const LoginScreen = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover', // or 'stretch', 'contain', etc.
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-  },
-  goToRegistrationContainer: {
-    marginTop: 50,
-  },
-  error: {
-    color: 'red',
-  },
-});
 
 export default LoginScreen;
