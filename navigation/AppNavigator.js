@@ -3,7 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../components/HomeScreen';
 import CryptoList from '../components/CryptoList';
 import HomeIcon from '../assets/Bitcoin.jpg'; // Replace with the actual path to your icon
-import ProfileIcon from '../assets/profile.png'; // Replace with the actual path to your icon
+import ProfileIcon from '../assets/profile1.png'; // Replace with the actual path to your icon
 import {Image} from 'react-native'; // Import Image from react-native
 
 const Tab = createBottomTabNavigator();

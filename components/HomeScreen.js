@@ -313,6 +313,13 @@ const HomeScreen = ({user}) => {
         visible={updateModalVisible}
         onRequestClose={() => setUpdateModalVisible(false)}>
         <View style={styles.modalContainer}>
+          <Text style={styles.heading}>
+            Update details
+            <Image
+              source={require('../assets/edit.png')}
+              style={styles.buttonImage}
+            />
+          </Text>
           <TouchableOpacity
             onPress={() => setUpdateModalVisible(false)}
             style={styles.closeButton}>
@@ -466,7 +473,7 @@ const HomeScreen = ({user}) => {
             style={styles.imageButton}
             onPress={() => setUpdateModalVisible(true)}>
             <Image
-              source={require('../assets/profile.png')}
+              source={require('../assets/edit.png')}
               style={styles.buttonImage}
             />
           </TouchableOpacity>

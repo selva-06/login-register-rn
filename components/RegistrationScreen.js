@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  TextInput,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  Button,
-} from 'react-native';
+import {View, TextInput, Text, TouchableOpacity, Button} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -207,109 +200,107 @@ const RegistrationScreen = ({navigation}) => {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/img.png')}
-      style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          placeholderTextColor="black"
-          value={firstName}
-          onChangeText={text => setFirstName(text)}
-          onBlur={validateFirstName}
-        />
-        <Text style={styles.error}>{firstNameError}</Text>
+    <View style={styles.container}>
+      <Text style={styles.head}>Welcome, Register!!</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        placeholderTextColor="black"
+        value={firstName}
+        onChangeText={text => setFirstName(text)}
+        onBlur={validateFirstName}
+      />
+      <Text style={styles.error}>{firstNameError}</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          placeholderTextColor="black"
-          value={lastName}
-          onChangeText={text => setLastName(text)}
-          onBlur={validateLastName}
-        />
-        <Text style={styles.error}>{lastNameError}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="black"
-          value={email}
-          onChangeText={text => setEmail(text)}
-          onBlur={validateEmail}
-        />
-        <Text style={styles.error}>{emailError}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        placeholderTextColor="black"
+        value={lastName}
+        onChangeText={text => setLastName(text)}
+        onBlur={validateLastName}
+      />
+      <Text style={styles.error}>{lastNameError}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="black"
+        value={email}
+        onChangeText={text => setEmail(text)}
+        onBlur={validateEmail}
+      />
+      <Text style={styles.error}>{emailError}</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="black"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          onBlur={validatePassword}
-        />
-        <Text style={styles.error}>{passwordError}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="black"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        onBlur={validatePassword}
+      />
+      <Text style={styles.error}>{passwordError}</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          placeholderTextColor="black"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          onBlur={validateConfirmPassword}
-        />
-        <Text style={styles.error}>{confirmPasswordError}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        placeholderTextColor="black"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        onBlur={validateConfirmPassword}
+      />
+      <Text style={styles.error}>{confirmPasswordError}</Text>
 
-        <Text style={styles.label}>Gender:</Text>
-        <View>
-          <RadioButton.Group
-            onValueChange={newValue => setGender(newValue)}
-            value={gender}>
-            <View style={styles.radioButton}>
-              <Text style={styles.radioLabel}>Male</Text>
-              <RadioButton value="male" color="#000" />
-            </View>
-            <View style={styles.radioButton}>
-              <Text style={styles.radioLabel}>Female</Text>
-              <RadioButton value="female" color="#000" />
-            </View>
-          </RadioButton.Group>
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Date of Birth"
-          placeholderTextColor="black"
-          value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''}
-          onTouchStart={() => setShowDatePicker(true)}
-        />
-        <Text style={styles.error}>{dateOfBirthError}</Text>
-
-        {showDatePicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            onValueChange={newValue => setDateOfBirth(newValue)}
-            value={dateOfBirth ? dateOfBirth : new Date()} // Updated value prop
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={handleDateChange}
-          />
-        )}
-        <View style={styles.checkboxContainer}>
-          <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
-          <Text style={styles.error}>{checkedError}</Text>
-        </View>
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-        <Button
-          title="Go to Login"
-          onPress={() => navigation.navigate('Login')}
-        />
+      <Text style={styles.label}>Gender:</Text>
+      <View>
+        <RadioButton.Group
+          onValueChange={newValue => setGender(newValue)}
+          value={gender}>
+          <View style={styles.radioButton}>
+            <Text style={styles.radioLabel}>Male</Text>
+            <RadioButton value="male" color="#000" />
+          </View>
+          <View style={styles.radioButton}>
+            <Text style={styles.radioLabel}>Female</Text>
+            <RadioButton value="female" color="#000" />
+          </View>
+        </RadioButton.Group>
       </View>
-    </ImageBackground>
+      <TextInput
+        style={styles.input}
+        placeholder="Date of Birth"
+        placeholderTextColor="black"
+        value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''}
+        onTouchStart={() => setShowDatePicker(true)}
+      />
+      <Text style={styles.error}>{dateOfBirthError}</Text>
+
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          onValueChange={newValue => setDateOfBirth(newValue)}
+          value={dateOfBirth ? dateOfBirth : new Date()} // Updated value prop
+          mode="date"
+          is24Hour={true}
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+      <View style={styles.checkboxContainer}>
+        <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
+        <Text style={styles.error}>{checkedError}</Text>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
+      <Button
+        style={styles.loginbtn}
+        title="Go to Login"
+        onPress={() => navigation.navigate('Login')}
+      />
+    </View>
   );
 };
 

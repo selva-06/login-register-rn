@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Touchable,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import db from '../DatabaseHelper.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginStyles} from '../styles/ScreenStyles.js';
@@ -72,6 +80,11 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headText}>CryptoWorld</Text>
+      <Image
+        source={require('../assets/Bitcoin.jpg')} // Provide the correct path to your image
+        style={styles.image}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -96,7 +109,9 @@ const LoginScreen = ({navigation}) => {
       />
       <Text style={styles.error}>{passwordError}</Text>
       <View style={styles.goToRegistrationContainer}>
-        <Button title="Sign In" onPress={handleSignIn} />
+        <TouchableOpacity style={styles.loginbtn} onPress={handleSignIn}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
         <View style={styles.goToRegistrationContainer}>
           <Button
             title="Go to Registration"
