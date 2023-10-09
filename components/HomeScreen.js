@@ -8,6 +8,7 @@ import {
   Modal,
   Alert,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRoute} from '@react-navigation/native';
 import {
@@ -21,9 +22,8 @@ import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {homeStyles} from '../styles/ScreenStyles';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({user}) => {
   const route = useRoute();
-  const {user} = route.params;
   const [userDetails, setUserDetails] = useState(user); // Add this line
   const [modalVisible, setModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
@@ -53,6 +53,7 @@ const HomeScreen = ({navigation}) => {
   const [passwordErrorup, setPasswordErrorup] = useState('');
   const [dateOfBirthErrorup, setDateOfBirthErrorup] = useState('');
   const [menumodalVisible, setmenuModalVisible] = useState(false);
+  const navigation = useNavigation();
 
   const handleLogout = async () => {
     try {
@@ -385,7 +386,7 @@ const HomeScreen = ({navigation}) => {
               style={styles.input}
               placeholder="Date of Birth"
               placeholderTextColor="black"
-              value={newUserDob ? newUserDobup.toString() : ''}
+              value={newUserDob ? newUserDobup.toISOString().split('T')[0] : ''}
               onTouchStart={() => setShowDatePicker(true)}
               onBlur={validateDateOfBirthup}
             />
@@ -480,7 +481,7 @@ const HomeScreen = ({navigation}) => {
               style={styles.input}
               placeholder="Date of Birth"
               placeholderTextColor="black"
-              value={newUserDob ? newUserDob.toString() : ''}
+              value={newUserDob ? newUserDob.toISOString().split('T')[0] : ''}
               onTouchStart={() => setShowDatePicker(true)}
               onBlur={validateDateOfBirth}
             />

@@ -12,7 +12,7 @@ const SplashScreen = () => {
         const userData = await AsyncStorage.getItem('userData');
         if (userData) {
           const user = JSON.parse(userData);
-          navigation.replace('Home', {user});
+          navigation.replace('Main', {user});
         } else {
           navigation.replace('Login');
         }

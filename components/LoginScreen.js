@@ -29,7 +29,7 @@ const LoginScreen = ({navigation}) => {
               console.log('User authenticated');
               AsyncStorage.setItem('userData', JSON.stringify(user));
               console.log('User data stored in AsyncStorage:', user);
-              navigation.navigate('Home', {user});
+              navigation.navigate('Main', {user});
             } else {
               setEmailError('Invalid email or password');
               setPasswordError('Invalid email or password');

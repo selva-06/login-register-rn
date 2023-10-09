@@ -203,10 +203,23 @@ export const homeStyles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  menuIcon: {
+    color: 'black',
+    fontSize: 30,
+    paddingLeft: 15,
+  },
+  drawerContainer: {
+    flex: 1,
+    backgroundColor: '#333',
+    paddingTop: 50,
+    paddingLeft: 10,
+  },
   menuItem: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    paddingBottom: 20,
+  },
+  menuText: {
+    color: 'white',
+    fontSize: 18,
   },
 });
 

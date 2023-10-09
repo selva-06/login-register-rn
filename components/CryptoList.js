@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import {View, Text, FlatList, Image} from 'react-native';
 import axios from 'axios';
 import {cryptoStyles} from '../styles/ScreenStyles';
 

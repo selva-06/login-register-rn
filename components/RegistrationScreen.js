@@ -262,7 +262,7 @@ const RegistrationScreen = ({navigation}) => {
           style={styles.input}
           placeholder="Date of Birth"
           placeholderTextColor="black"
-          value={dateOfBirth ? dateOfBirth.toString() : ''}
+          value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''}
           onTouchStart={() => setShowDatePicker(true)}
         />
         <Text style={styles.error}>{dateOfBirthError}</Text>
