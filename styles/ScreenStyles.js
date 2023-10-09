@@ -121,20 +121,69 @@ export const homeStyles = StyleSheet.create({
     // padding: 20,
     flexDirection: 'column',
   },
-  text: {
+  headingtext: {
+    fontSize: 25,
+    color: 'black',
+    marginLeft: 70,
+    marginBottom: 20,
+    fontWeight: 'bold',
+  },
+  detailstext: {
+    fontSize: 20,
+    color: 'black',
+    marginLeft: 20,
+    marginBottom: 20,
+  },
+  textContainer: {
+    flexDirection: 'row',
+    marginBottom: 10, // Adjust as needed
+  },
+  imageButton: {
+    marginLeft: 10,
+    marginTop: 0, // Adjust as needed
+  },
+  buttonImage: {
+    width: 30, // Set the width of the image
+    height: 30, // Set the height of the image
+  },
+  datalist: {
     fontSize: 20,
     marginBottom: 10,
     color: 'black',
-    marginLeft: 30,
+    marginLeft: 10,
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: 'black',
+    marginLeft: 20,
   },
   linkText: {
     color: 'blue',
     fontSize: 16,
     marginBottom: 10,
     marginLeft: 30,
+    marginTop: 40,
+  },
+  delete: {
+    color: 'red',
+    fontSize: 20,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginTop: 10,
   },
   error: {
     color: 'red',
+  },
+  textabove: {
+    width: '100%',
+    height: 40,
+    paddingLeft: 8,
+    color: 'black',
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+    fontSize: 18,
+    paddingBottom: 0,
   },
   input: {
     width: '100%',
@@ -150,10 +199,6 @@ export const homeStyles = StyleSheet.create({
   },
   radioLabel: {
     marginLeft: 8,
-    fontSize: 16,
-    color: '#000',
-  },
-  label: {
     fontSize: 16,
     color: '#000',
   },
@@ -181,10 +226,43 @@ export const homeStyles = StyleSheet.create({
     textAlign: 'center',
   },
   modalContainer: {
-    backgroundColor: 'white',
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    right: 20,
+    bottom: 50,
+    maxHeight: '80%', // Adjust this value as needed
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Use a semi-transparent background color
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    paddingTop: 50,
+    flex: 1,
+  },
+  scrollContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    flex: 1,
+    maxHeight: '80%', // Set a maximum height for the modal
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  closeButtonText: {
+    color: 'blue', // Adjust the color as needed
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginBottom: 5,
   },
   modalView: {
     position: 'absolute',

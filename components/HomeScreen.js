@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   Button,
   Modal,
   Alert,
+  Image,
+  ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,17 +30,23 @@ const HomeScreen = ({user}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [newUserName, setNewUserName] = useState('');
-  const [newUserNameupdate, setNewUserNameupdate] = useState('');
+  const [newUserNameupdate, setNewUserNameupdate] = useState(userDetails.name);
   const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserEmailup, setNewUserEmailup] = useState('');
+  const [newUserEmailup, setNewUserEmailup] = useState(userDetails.email);
   const [newUserPassword, setNewUserPassword] = useState('');
-  const [newUserPasswordup, setNewUserPasswordup] = useState('');
+  const [newUserPasswordup, setNewUserPasswordup] = useState(
+    userDetails.password,
+  );
   const [newUserLastname, setNewUserLastname] = useState('');
-  const [newUserLastnameup, setNewUserLastnameup] = useState('');
+  const [newUserLastnameup, setNewUserLastnameup] = useState(
+    userDetails.lastname,
+  );
   const [newUserGender, setNewUserGender] = useState('');
-  const [newUserGenderup, setNewUserGenderup] = useState('');
+  const [newUserGenderup, setNewUserGenderup] = useState(userDetails.gender);
   const [newUserDob, setNewUserDob] = useState('');
-  const [newUserDobup, setNewUserDobup] = useState('');
+  const [newUserDobup, setNewUserDobup] = useState(
+    user.dob ? new Date(user.dob) : null,
+  );
   const [newUserCheckboxChecked, setNewUserCheckboxChecked] = useState('');
   const [newUserCheckboxCheckedup, setNewUserCheckboxCheckedup] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false); // Updated state name
@@ -54,6 +62,11 @@ const HomeScreen = ({user}) => {
   const [dateOfBirthErrorup, setDateOfBirthErrorup] = useState('');
   const [menumodalVisible, setmenuModalVisible] = useState(false);
   const navigation = useNavigation();
+  useEffect(() => {
+    // Set user details on initial render
+    setUserDetails(user);
+  }, [user]);
+  console.log('User details after update:', userDetails);
 
   const handleLogout = async () => {
     try {
@@ -99,20 +112,24 @@ const HomeScreen = ({user}) => {
         newUserGenderup || userto.gender,
         newUserDobup || userto.dob,
         newUserCheckboxCheckedup ? 1 : 0, // Convert to 0 or 1
-        results => {
+        async results => {
           console.log('User updated successfully:', results);
-          setNewUserNameupdate('');
-          setNewUserEmailup('');
-          setNewUserPasswordup('');
-          setNewUserLastnameup('');
-          setNewUserGenderup('');
-          setNewUserDobup('');
-          setNewUserCheckboxCheckedup('');
+          // setNewUserNameupdate('');
+          // setNewUserEmailup('');
+          // setNewUserPasswordup('');
+          // setNewUserLastnameup('');
+          // setNewUserGenderup('');
+          // setNewUserDobup('');
+          // setNewUserCheckboxCheckedup('');
           setUpdateModalVisible(false);
           setUserDetails(prevUser => ({
             ...prevUser,
             name: newUserNameupdate || userto.name,
             email: newUserEmailup || userto.email,
+            lastname: newUserLastnameup || userto.lastname,
+            gender: newUserGenderup || userto.gender,
+            dob: newUserDobup || userto.dob,
+            password: newUserPasswordup || userto.password,
             // Update other fields as needed
           }));
         },
@@ -161,6 +178,18 @@ const HomeScreen = ({user}) => {
     setShowDatePicker(false);
 
     setNewUserDob(currentDate);
+  };
+
+  const handleDateChangeUp = (event, selectedDate) => {
+    if (event.type === 'set' && selectedDate) {
+      // "set" event occurs when the user selects a date
+      const currentDate = new Date(selectedDate);
+      setShowDatePicker(false);
+      setNewUserDobup(currentDate);
+    } else {
+      // "dismissed" event occurs when the user cancels the picker
+      setShowDatePicker(false);
+    }
   };
 
   const validateFirstName = () => {
@@ -268,15 +297,148 @@ const HomeScreen = ({user}) => {
   const toggleModal = () => {
     setmenuModalVisible(!menumodalVisible);
   };
-  const handleCrypto = () => {
-    navigation.navigate('Crypto');
-  };
+  // const handleCrypto = () => {
+  //   navigation.navigate('Main');
+  // };
 
   return (
     <>
       <TouchableOpacity onPress={toggleModal}>
         <Text style={{color: 'black', fontSize: 30, paddingLeft: 15}}>☰</Text>
       </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={updateModalVisible}
+        onRequestClose={() => setUpdateModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            onPress={() => setUpdateModalVisible(false)}
+            style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>X</Text>
+          </TouchableOpacity>
+          <ScrollView style={styles.scrollContainer}>
+            <Text style={styles.textabove}>FirstName:</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              placeholderTextColor="black"
+              value={
+                newUserNameupdate !== null
+                  ? newUserNameupdate
+                  : userDetails.name
+              }
+              onChangeText={setNewUserNameupdate}
+              onBlur={validateFirstNameup}
+            />
+            <Text style={styles.error}>{firstNameErrorup}</Text>
+            <Text style={styles.textabove}>LastName:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              placeholderTextColor="black"
+              value={
+                newUserLastnameup !== null
+                  ? newUserLastnameup
+                  : userDetails.lastname
+              }
+              onChangeText={setNewUserLastnameup}
+              onBlur={validateLastNameup}
+            />
+            <Text style={styles.error}>{lastNameErrorup}</Text>
+            <Text style={styles.textabove}>Email:</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="black"
+              value={
+                newUserEmailup !== null ? newUserEmailup : userDetails.email
+              }
+              onChangeText={setNewUserEmailup}
+              onBlur={validateEmailup}
+            />
+            <Text style={styles.error}>{emailErrorup}</Text>
+            <Text style={styles.textabove}>Password:</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="black"
+              secureTextEntry
+              value={
+                newUserPasswordup !== null
+                  ? newUserPasswordup
+                  : userDetails.password
+              }
+              onChangeText={setNewUserPasswordup}
+              onBlur={validatePasswordup}
+            />
+            <Text style={styles.error}>{passwordErrorup}</Text>
+            <Text style={styles.textabove}>Gender:</Text>
+
+            <View>
+              <RadioButton.Group
+                onValueChange={setNewUserGenderup}
+                value={
+                  newUserGenderup !== null
+                    ? newUserGenderup
+                    : userDetails.gender
+                }>
+                <View style={styles.radioButton}>
+                  <Text style={styles.radioLabel}>Male</Text>
+                  <RadioButton value="male" color="#000" />
+                </View>
+                <View style={styles.radioButton}>
+                  <Text style={styles.radioLabel}>Female</Text>
+                  <RadioButton value="female" color="#000" />
+                </View>
+              </RadioButton.Group>
+            </View>
+            <Text style={styles.textabove}>DOB:</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Date of Birth"
+              placeholderTextColor="black"
+              value={
+                newUserDobup
+                  ? newUserDobup.toISOString().split('T')[0]
+                  : user.dob
+              }
+              onTouchStart={() => setShowDatePicker(true)}
+              onBlur={validateDateOfBirthup}
+            />
+
+            <Text style={styles.error}>{dateOfBirthError}</Text>
+
+            {showDatePicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={newUserDobup ? newUserDobup : new Date()}
+                mode="date"
+                is24Hour={true}
+                display="default"
+                onChange={handleDateChangeUp}
+              />
+            )}
+            <View style={styles.checkboxContainer}>
+              <CustomCheckbox
+                isChecked={newUserCheckboxCheckedup}
+                onPress={setNewUserCheckboxCheckedup}
+              />
+            </View>
+            <Button title="Save Changes" onPress={handleUpdateUser} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setUpdateModalVisible(false)}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
 
       <View style={styles.container}>
         <Modal
@@ -293,128 +455,58 @@ const HomeScreen = ({user}) => {
             </TouchableOpacity>
           </View>
         </Modal>
-        <Text style={styles.text}>Email: {user.email}</Text>
-        <Text style={styles.text}>Name: {user.name}</Text>
-        <Text style={styles.text}>Gender: {user.gender}</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.headingtext}>
+            Hi {userDetails.name + userDetails.lastname}!!
+          </Text>
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.detailstext}>Details</Text>
+          <TouchableOpacity
+            style={styles.imageButton}
+            onPress={() => setUpdateModalVisible(true)}>
+            <Image
+              source={require('../assets/profile.png')}
+              style={styles.buttonImage}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.datalist}>
+          <Text style={styles.text}>Email: {userDetails.email}</Text>
+          <Text style={styles.text}>Name: {userDetails.name}</Text>
+          <Text style={styles.text}>Gender: {userDetails.gender}</Text>
+          <Text style={styles.text}>
+            DOB: {new Date(userDetails.dob).toLocaleDateString()}
+          </Text>
+        </View>
 
         <TouchableOpacity onPress={handleLogout}>
           <Text style={styles.linkText}>Logout</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.buttontouch}
           onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Create User</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity
           style={styles.buttontouch}
           onPress={() => setUpdateModalVisible(true)}>
-          <Text style={styles.buttonText}>Update User</Text>
+          <Image
+            source={require('../assets/profile.png')}
+            style={styles.buttonImage}
+          />
+        </TouchableOpacity> */}
+
+        <TouchableOpacity onPress={handleDeleteUser}>
+          <Text style={styles.delete}>Delete User</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttontouch} onPress={handleDeleteUser}>
-          <Text style={styles.buttonText}>Delete User</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.buttontouch} onPress={handleCrypto}>
+        {/* <TouchableOpacity style={styles.buttontouch} onPress={handleCrypto}>
           <Text style={styles.buttonText}> CryptoRates</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={updateModalVisible}
-          onRequestClose={() => setUpdateModalVisible(false)}>
-          <View style={styles.modalContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              placeholderTextColor="black"
-              value={newUserNameupdate}
-              onChangeText={setNewUserNameupdate}
-              onBlur={validateFirstNameup}
-            />
-            <Text style={styles.error}>{firstNameErrorup}</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Last Name"
-              placeholderTextColor="black"
-              value={newUserLastnameup}
-              onChangeText={setNewUserLastnameup}
-              onBlur={validateLastNameup}
-            />
-            <Text style={styles.error}>{lastNameErrorup}</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="black"
-              value={newUserEmailup}
-              onChangeText={setNewUserEmailup}
-              onBlur={validateEmailup}
-            />
-            <Text style={styles.error}>{emailErrorup}</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="black"
-              secureTextEntry
-              value={newUserPasswordup}
-              onChangeText={setNewUserPasswordup}
-              onBlur={validatePasswordup}
-            />
-            <Text style={styles.error}>{passwordErrorup}</Text>
-
-            <Text style={styles.label}>Gender:</Text>
-            <View>
-              <RadioButton.Group
-                onValueChange={setNewUserGenderup}
-                value={newUserGenderup}>
-                <View style={styles.radioButton}>
-                  <Text style={styles.radioLabel}>Male</Text>
-                  <RadioButton value="male" color="#000" />
-                </View>
-                <View style={styles.radioButton}>
-                  <Text style={styles.radioLabel}>Female</Text>
-                  <RadioButton value="female" color="#000" />
-                </View>
-              </RadioButton.Group>
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Date of Birth"
-              placeholderTextColor="black"
-              value={newUserDob ? newUserDobup.toISOString().split('T')[0] : ''}
-              onTouchStart={() => setShowDatePicker(true)}
-              onBlur={validateDateOfBirthup}
-            />
-            <Text style={styles.error}>{dateOfBirthErrorup}</Text>
-            {showDatePicker && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={newUserDobup || new Date()} // Updated value prop
-                mode="date"
-                is24Hour={true}
-                display="default"
-                onChange={handleDateChange}
-              />
-            )}
-            <View style={styles.checkboxContainer}>
-              <CustomCheckbox
-                isChecked={newUserCheckboxCheckedup}
-                onPress={setNewUserCheckboxCheckedup}
-              />
-            </View>
-            <Button title="Save Changes" onPress={handleUpdateUser} />
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setUpdateModalVisible(false)}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
         <Modal
           animationType="slide"
           transparent={true}

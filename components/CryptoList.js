@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, Image} from 'react-native';
+import {View, Text, FlatList, Image, RefreshControl} from 'react-native';
 import axios from 'axios';
 import {cryptoStyles} from '../styles/ScreenStyles';
 
 const CryptoList = () => {
   const [cryptoData, setCryptoData] = useState([]);
+  const [refreshing, setRefreshing] = useState(true);
 
-  useEffect(() => {
+  const fetchData = () => {
     axios
       .get('https://api.coingecko.com/api/v3/coins/markets', {
         params: {
@@ -19,11 +20,22 @@ const CryptoList = () => {
       })
       .then(response => {
         setCryptoData(response.data);
+        setRefreshing(false); // Once data is fetched, set refreshing to false
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        setRefreshing(false); // In case of error, set refreshing to false
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []); // Fetch data on initial render
+
+  const onRefresh = () => {
+    setRefreshing(true); // Set refreshing to true when the user pulls down to refresh
+    fetchData(); // Fetch data again
+  };
 
   return (
     <View style={styles.container}>
@@ -47,6 +59,9 @@ const CryptoList = () => {
             <Image source={{uri: item.image}} style={styles.image} />
           </View>
         )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );

@@ -34,6 +34,8 @@ const RegistrationScreen = ({navigation}) => {
   const validateFirstName = () => {
     if (!firstName.trim()) {
       setFirstNameError('First Name is required');
+    } else if (/^\s+$/.test(firstName)) {
+      setFirstNameError('First Name cannot be whitespace only');
     } else {
       setFirstNameError('');
     }
@@ -42,40 +44,54 @@ const RegistrationScreen = ({navigation}) => {
   const validateLastName = () => {
     if (!lastName.trim()) {
       setLastNameError('Last Name is required');
+    } else if (/^\s+$/.test(firstName)) {
+      setLastNameError('First Name cannot be whitespace only');
     } else {
       setLastNameError('');
     }
   };
 
   const validateEmail = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      setEmailError('Please enter a valid email address');
+    const emailTrimmed = email.trim();
+    if (!emailTrimmed) {
+      setEmailError('Email is required');
     } else {
-      setEmailError('');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailTrimmed)) {
+        setEmailError('Please enter a valid email address');
+      } else {
+        setEmailError('');
+      }
     }
   };
 
   const validatePassword = () => {
-    const minLength = 8;
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    if (password.length < minLength) {
-      setPasswordError(
-        `Password must be at least ${minLength} characters long`,
-      );
-    } else if (!passwordRegex.test(password)) {
-      setPasswordError(
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-      );
+    const passwordTrimmed = password.trim();
+    if (!passwordTrimmed) {
+      setPasswordError('Password is required');
     } else {
-      setPasswordError('');
+      const minLength = 8;
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (passwordTrimmed.length < minLength) {
+        setPasswordError(
+          `Password must be at least ${minLength} characters long`,
+        );
+      } else if (!passwordRegex.test(passwordTrimmed)) {
+        setPasswordError(
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+        );
+      } else {
+        setPasswordError('');
+      }
     }
   };
 
   const validateConfirmPassword = () => {
-    if (password !== confirmPassword) {
+    const confirmPasswordTrimmed = confirmPassword.trim();
+    if (!confirmPasswordTrimmed) {
+      setConfirmPasswordError('Confirm Password is required');
+    } else if (password !== confirmPasswordTrimmed) {
       setConfirmPasswordError('Passwords do not match');
     } else {
       setConfirmPasswordError('');
@@ -85,6 +101,8 @@ const RegistrationScreen = ({navigation}) => {
   const validateDateOfBirth = () => {
     if (!dateOfBirth) {
       setDateOfBirthError('Date of Birth is required');
+    } else if (/^\s+$/.test(dateOfBirth)) {
+      setDateOfBirthError('Date of Birth cannot be whitespace only');
     } else {
       setDateOfBirthError('');
     }
@@ -93,11 +111,12 @@ const RegistrationScreen = ({navigation}) => {
   const validateChecked = () => {
     if (!checked) {
       setCheckedError('*');
+    } else if (/^\s+$/.test(checked)) {
+      setCheckedError('Checked field cannot be whitespace only');
     } else {
       setCheckedError('');
     }
   };
-
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateOfBirth;
 
