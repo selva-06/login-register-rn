@@ -69,6 +69,9 @@ addColumnIfNotExists('gender', 'TEXT');
 addColumnIfNotExists('dob', 'TEXT');
 // Add checkbox column
 addColumnIfNotExists('checkbox_checked', 'INTEGER DEFAULT 0'); // Assuming 0 means not checked and 1 means checked
+addColumnIfNotExists('image_path', 'TEXT');
+addColumnIfNotExists('latitude', 'REAL');
+addColumnIfNotExists('longitude', 'REAL');
 
 const insertUser = (
   name,
@@ -78,13 +81,23 @@ const insertUser = (
   gender,
   dob,
   checkboxChecked, // Add checkboxChecked parameter
+  imagePath,
   onSuccess,
   onError,
 ) => {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO users (name, email, password, lastname, gender, dob, checkbox_checked) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [name, email, password, lastname, gender, dob, checkboxChecked],
+      'INSERT INTO users (name, email, password, lastname, gender, dob, checkbox_checked, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        name,
+        email,
+        password,
+        lastname,
+        gender,
+        dob,
+        checkboxChecked,
+        imagePath,
+      ],
       (_, results) => {
         onSuccess(results);
       },
@@ -169,4 +182,26 @@ const getUserById = (id, onSuccess, onError) => {
   });
 };
 
-export {insertUser, getAllUsers, updateUser, deleteUser, getUserById};
+const updateUserLocation = (id, latitude, longitude, onSuccess, onError) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'UPDATE users SET latitude=?, longitude=? WHERE id=?',
+      [latitude, longitude, id],
+      (_, results) => {
+        onSuccess(results);
+      },
+      error => {
+        onError(error);
+      },
+    );
+  });
+};
+
+export {
+  insertUser,
+  getAllUsers,
+  updateUser,
+  deleteUser,
+  getUserById,
+  updateUserLocation,
+};

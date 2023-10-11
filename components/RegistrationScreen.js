@@ -1,10 +1,20 @@
 import React, {useState} from 'react';
-import {View, TextInput, Text, TouchableOpacity, Button} from 'react-native';
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  Button,
+  Image,
+  ScrollView,
+} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import CustomCheckbox from './CustomCheckbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {insertUser} from '../DatabaseHelper';
 import {registerStyles} from '../styles/ScreenStyles';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
 
 const RegistrationScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -23,7 +33,82 @@ const RegistrationScreen = ({navigation}) => {
   const [dateOfBirthError, setDateOfBirthError] = useState('');
   const [checkedError, setCheckedError] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false); // Updated state name
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageError, setImageError] = useState('');
 
+  const openImagePicker = () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchImageLibrary(options, async response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        try {
+          let imageUri = response.uri || response.assets?.[0]?.uri;
+          let imagePath = await saveImageToFS(imageUri);
+          setSelectedImage(imagePath);
+          // Now, you can call the insertUser function with the imagePath parameter
+        } catch (error) {
+          console.error('Error saving image:', error);
+        }
+      }
+    });
+  };
+
+  const saveImageToFS = async imageUri => {
+    try {
+      const imagePath = `${
+        RNFS.DocumentDirectoryPath
+      }/user_${new Date().getTime()}.jpg`;
+      await RNFS.copyFile(imageUri, imagePath);
+      return imagePath;
+    } catch (error) {
+      console.error('Error saving image:', error);
+      throw error;
+    }
+  };
+
+  const handleCameraLaunch = async () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchCamera(options, async response => {
+      if (response.didCancel) {
+        console.log('User cancelled camera');
+      } else if (response.error) {
+        console.log('Camera Error: ', response.error);
+      } else {
+        try {
+          let imageUri = response.uri || response.assets?.[0]?.uri;
+          let imagePath = await saveImageToFS(imageUri);
+          setSelectedImage(imagePath);
+          // Now, you can call the insertUser function with the imagePath parameter
+          console.log('Selected Image Path:', selectedImage);
+        } catch (error) {
+          console.error('Error saving image:', error);
+        }
+      }
+    });
+  };
+
+  const validateImage = () => {
+    if (selectedImage === null) {
+      setImageError('image required');
+    } else {
+      setImageError('');
+    }
+  };
   const validateFirstName = () => {
     if (!firstName.trim()) {
       setFirstNameError('First Name is required');
@@ -130,7 +215,8 @@ const RegistrationScreen = ({navigation}) => {
       !password &&
       !confirmPassword &&
       !dateOfBirth &&
-      !checked
+      !checked &&
+      !selectedImage
     ) {
       setFirstNameError('First Name is required');
       setLastNameError('Last Name is required');
@@ -139,6 +225,7 @@ const RegistrationScreen = ({navigation}) => {
       setConfirmPasswordError('Confirm Password is required');
       setDateOfBirthError('Date of Birth is required');
       setCheckedError('*');
+      setImageError('Profile Pic is mandatory');
       return; // Exit the function early if there are empty fields
     }
     validateFirstName();
@@ -148,6 +235,7 @@ const RegistrationScreen = ({navigation}) => {
     validateConfirmPassword();
     validateDateOfBirth();
     validateChecked();
+    validateImage();
 
     if (
       !firstNameError &&
@@ -156,7 +244,8 @@ const RegistrationScreen = ({navigation}) => {
       !passwordError &&
       !confirmPasswordError &&
       !dateOfBirthError &&
-      !checkedError
+      !checkedError &&
+      !imageError
     ) {
       console.log('Registration details:', {
         firstName,
@@ -174,6 +263,7 @@ const RegistrationScreen = ({navigation}) => {
         gender,
         dateOfBirth,
         checked, // Pass the checkbox value
+        selectedImage,
         results => {
           console.log('User inserted successfully:', results);
         },
@@ -189,6 +279,7 @@ const RegistrationScreen = ({navigation}) => {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      setSelectedImage('null');
       setFirstNameError('');
       setLastNameError('');
       setEmailError('');
@@ -196,110 +287,134 @@ const RegistrationScreen = ({navigation}) => {
       setConfirmPasswordError('');
       setDateOfBirthError('');
       setCheckedError('');
+      setImageError('');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.head}>Welcome, Register!!</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        placeholderTextColor="black"
-        value={firstName}
-        onChangeText={text => setFirstName(text)}
-        onBlur={validateFirstName}
-      />
-      <Text style={styles.error}>{firstNameError}</Text>
+      <ScrollView style={styles.scrollContainer}>
+        <Text style={styles.head}>Welcome, Register!!</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        placeholderTextColor="black"
-        value={lastName}
-        onChangeText={text => setLastName(text)}
-        onBlur={validateLastName}
-      />
-      <Text style={styles.error}>{lastNameError}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="black"
-        value={email}
-        onChangeText={text => setEmail(text)}
-        onBlur={validateEmail}
-      />
-      <Text style={styles.error}>{emailError}</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="black"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        onBlur={validatePassword}
-      />
-      <Text style={styles.error}>{passwordError}</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        placeholderTextColor="black"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        onBlur={validateConfirmPassword}
-      />
-      <Text style={styles.error}>{confirmPasswordError}</Text>
-
-      <Text style={styles.label}>Gender:</Text>
-      <View>
-        <RadioButton.Group
-          onValueChange={newValue => setGender(newValue)}
-          value={gender}>
-          <View style={styles.radioButton}>
-            <Text style={styles.radioLabel}>Male</Text>
-            <RadioButton value="male" color="#000" />
-          </View>
-          <View style={styles.radioButton}>
-            <Text style={styles.radioLabel}>Female</Text>
-            <RadioButton value="female" color="#000" />
-          </View>
-        </RadioButton.Group>
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Date of Birth"
-        placeholderTextColor="black"
-        value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''}
-        onTouchStart={() => setShowDatePicker(true)}
-      />
-      <Text style={styles.error}>{dateOfBirthError}</Text>
-
-      {showDatePicker && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          onValueChange={newValue => setDateOfBirth(newValue)}
-          value={dateOfBirth ? dateOfBirth : new Date()} // Updated value prop
-          mode="date"
-          is24Hour={true}
-          display="default"
-          onChange={handleDateChange}
+        {selectedImage && (
+          <Image
+            source={{uri: `file://${selectedImage}`}}
+            style={{
+              width: 150,
+              height: 150,
+              borderRadius: 75,
+              justifyContent: 'center',
+              marginLeft: 80,
+            }}
+            resizeMode="contain"
+          />
+        )}
+        <View style={{marginTop: 20}}>
+          <Button title="Choose from Device" onPress={openImagePicker} />
+        </View>
+        <View style={{marginTop: 20, marginBottom: 50}}>
+          <Button title="Open Camera" onPress={handleCameraLaunch} />
+          <Text style={styles.error}>{imageError}</Text>
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          placeholderTextColor="black"
+          value={firstName}
+          onChangeText={text => setFirstName(text)}
+          onBlur={validateFirstName}
         />
-      )}
-      <View style={styles.checkboxContainer}>
-        <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
-        <Text style={styles.error}>{checkedError}</Text>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-      <Button
-        style={styles.loginbtn}
-        title="Go to Login"
-        onPress={() => navigation.navigate('Login')}
-      />
+        <Text style={styles.error}>{firstNameError}</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          placeholderTextColor="black"
+          value={lastName}
+          onChangeText={text => setLastName(text)}
+          onBlur={validateLastName}
+        />
+        <Text style={styles.error}>{lastNameError}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="black"
+          value={email}
+          onChangeText={text => setEmail(text)}
+          onBlur={validateEmail}
+        />
+        <Text style={styles.error}>{emailError}</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="black"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          onBlur={validatePassword}
+        />
+        <Text style={styles.error}>{passwordError}</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          placeholderTextColor="black"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          onBlur={validateConfirmPassword}
+        />
+        <Text style={styles.error}>{confirmPasswordError}</Text>
+
+        <Text style={styles.label}>Gender:</Text>
+        <View>
+          <RadioButton.Group
+            onValueChange={newValue => setGender(newValue)}
+            value={gender}>
+            <View style={styles.radioButton}>
+              <Text style={styles.radioLabel}>Male</Text>
+              <RadioButton value="male" color="#000" />
+            </View>
+            <View style={styles.radioButton}>
+              <Text style={styles.radioLabel}>Female</Text>
+              <RadioButton value="female" color="#000" />
+            </View>
+          </RadioButton.Group>
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Date of Birth"
+          placeholderTextColor="black"
+          value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''}
+          onTouchStart={() => setShowDatePicker(true)}
+        />
+        <Text style={styles.error}>{dateOfBirthError}</Text>
+
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            onValueChange={newValue => setDateOfBirth(newValue)}
+            value={dateOfBirth ? dateOfBirth : new Date()} // Updated value prop
+            mode="date"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+        <View style={styles.checkboxContainer}>
+          <CustomCheckbox isChecked={checked} onPress={handleCheckboxToggle} />
+          <Text style={styles.error}>{checkedError}</Text>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+        <Button
+          style={styles.loginbtn}
+          title="Go to Login"
+          onPress={() => navigation.navigate('Login')}
+        />
+      </ScrollView>
     </View>
   );
 };
